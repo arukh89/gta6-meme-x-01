@@ -16,6 +16,7 @@ Two runs are byte-identical (fixed seed, no clock, no network).
 """
 
 import hashlib
+import math
 import random
 from pathlib import Path
 
@@ -25,6 +26,14 @@ HERE = Path(__file__).resolve().parent
 W, H = 1024, 1024
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 rng = random.Random(6)
+
+
+def load_font(size):
+    """DejaVuSans-Bold; Pillow's built-in default if the font file is missing."""
+    try:
+        return ImageFont.truetype(FONT, size)
+    except OSError:
+        return ImageFont.load_default(size)
 
 
 def lerp(a, b, t):
@@ -46,7 +55,6 @@ def text_center(draw, cx, y, s, font, fill, stroke=4):
 
 def palm(draw, base_x, base_y, lean, height, scale=1.0):
     """One palm silhouette: curved trunk, drooping fronds."""
-    import math
     ink = (16, 8, 40)
     top_x = base_x + lean
     top_y = base_y - height
@@ -89,7 +97,6 @@ def main():
     mark = Image.open(HERE / "assets" / "mark-1024.png").convert("RGBA")
     mark = mark.resize((430, 430), Image.LANCZOS)
     img.paste(mark, (512 - 215, 430 - 215), mark)
-    d = ImageDraw.Draw(img, "RGBA")
 
     # Skyline silhouettes in front of the sun.
     skyline = [(0, 600, 90, 700), (90, 560, 180, 700), (180, 620, 250, 700),
@@ -105,7 +112,7 @@ def main():
                                 fill=(255, 214, 120))
 
     # Neon VICE CITY sign on the tallest block.
-    neon = ImageFont.truetype(FONT, 30)
+    neon = load_font(30)
     for dx, dy in [(0, 0), (2, 0), (0, 2), (2, 2)]:
         d.text((100 + dx, 596 + dy), "VICE CITY", font=neon,
                fill=(255, 80, 180))
@@ -126,14 +133,15 @@ def main():
         y = rng.randint(815, H - 1)
         d.ellipse([x, y, x + 3, y + 2], fill=(186, 128, 70))
 
-    # Palms framing the scene.
+    # Palms framing the scene. The right palm sits at the edge so its
+    # trunk clears the bottom caption (which runs to x=987) by 10+ px.
     palm(d, 92, 1010, 70, 260, 1.05)
-    palm(d, 936, 1015, -60, 230, 0.95)
+    palm(d, 1014, 1015, -30, 230, 0.95)
 
     # Captions, big enough to read at 480 px.
-    big = ImageFont.truetype(FONT, 86)
-    mid = ImageFont.truetype(FONT, 62)
-    small = ImageFont.truetype(FONT, 46)
+    big = load_font(86)
+    mid = load_font(62)
+    small = load_font(46)
     text_center(d, 512, 28, "13 YEARS WAITING", big, (255, 255, 255))
     text_center(d, 512, 120, "FOR GTA 6", big, (255, 255, 255))
     text_center(d, 512, 838, "1 HOUR IN, IT'S 4AM.", mid, (255, 255, 255))

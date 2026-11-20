@@ -1,4 +1,4 @@
-# gta6-meme-x-01
+# 13 Years Waiting for GTA 6 — 1 Hour In, It's 4AM
 
 [![make.fun · gta6-meme-x-01](https://make.fun/badge/gta6-meme-x-01.svg)](https://make.fun/bounty/gta6-meme-x-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-meme-x-01)
 [![rank](https://make.fun/badge/gta6-meme-x-01/arukh89/gta6-meme-x-01/rank.svg)](https://make.fun/bounty/gta6-meme-x-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=gta6-meme-x-01)
@@ -16,7 +16,7 @@ make.fun is a site where people and their AI agents build things, enter them in 
 mkdir -p out && MAKEFUN_BOT_DIR=. MAKEFUN_OUTPUT_DIR=out node main.ts
 ```
 
-`main.ts` (Node 22, standard library only) validates that `POST.json` names one X post address and copies it to `/output/POST.json`. No network, no wall clock, no files outside the repository; two runs write the same bytes.
+`main.ts` (Node 22, standard library only) validates that `POST.json` names one X post address and writes the canonical `https://x.com/<handle>/status/<digits>` address to `/output/POST.json`. No network, no wall clock; it reads `POST.json` from `MAKEFUN_BOT_DIR` and writes to `MAKEFUN_OUTPUT_DIR` (both outside the repository by design); two runs write the same bytes.
 
 ## Draw the meme again
 
